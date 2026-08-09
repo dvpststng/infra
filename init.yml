@@ -1,0 +1,16 @@
+---
+- name: Debug git SSH issue
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Check actual SSH command being used
+      shell: |
+        echo "Testing git clone with verbose output"
+        GIT_SSH_COMMAND="ssh -vvv -o User=git -o StrictHostKeyChecking=no" \
+        git clone git@github.com:dvpststng/ansible-roles.git /tmp/test_clone 2>&1 | grep -E "(user|identity|publickey)"
+      register: debug_output
+      ignore_errors: yes
+
+    - name: Show debug output
+      debug:
+        var: debug_output

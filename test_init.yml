@@ -1,0 +1,20 @@
+---
+- name: Clone git repository to roles directory
+  hosts: localhost
+  gather_facts: no
+  vars:
+    ansible_ssh_key: "{{ lookup('env', 'HOME') }}/.ssh/id_ansible_github"
+  tasks:
+    - name: Ensure roles directory exists
+      file:
+        path: "roles"
+        state: directory
+
+    - name: Clone the git repository
+      git:
+        repo: 'git@github.com:dvpststng/ansible-roles.git'
+        dest: "roles"
+        version: master
+        force: yes
+        accept_hostkey: yes
+        key_file: "{{ ansible_ssh_key }}"

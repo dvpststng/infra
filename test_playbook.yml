@@ -1,0 +1,23 @@
+---
+- name: Debugging ssh keys
+  hosts: web
+  roles:
+     - { role: 'common' }
+  vars:
+    ssh_key: "{{ ansible_env.HOME }}~/.ssh/id_rsa"
+  tasks:
+    - name: Add SSH key to agent
+      shell: |
+        eval "$(ssh-agent -s)"
+        ssh-add {{ ssh_key }}
+        echo $SSH_AUTH_SOCK
+      register: ssh_agent_output
+      changed_when: false
+
+    - name: Set SSH_AUTH_SOCK
+      set_fact:
+        ssh_auth_sock: "{{ ssh_agent_output.stdout_lines[-1] }}"
+
+    - name: Debug SSH_AUTH_SOCK
+      debug:
+        msg: "SSH_AUTH_SOCK={{ ssh_auth_sock }}"
