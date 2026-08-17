@@ -1,4 +1,4 @@
 ---
 - hosts: db
   roles:
-     - { role: 'common' }
+     - { role: 'create_users' }
